@@ -52,6 +52,10 @@ public abstract class IntegrationTestBase {
         return userRepository.findAll();
     }
 
+    protected List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
+
     protected List<Training> createAllTrainings(List<Training> trainings) {
 
         trainings.forEach(training -> trainingRepository.save(training));
