@@ -1,8 +1,10 @@
 package pl.wsb.fitnesstracker.user.internal;
 
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import pl.wsb.fitnesstracker.training.internal.TrainingRepository;
 import pl.wsb.fitnesstracker.user.api.User;
 import pl.wsb.fitnesstracker.user.api.UserNotFoundException;
 import pl.wsb.fitnesstracker.user.api.UserProvider;
@@ -18,6 +20,7 @@ import java.util.Optional;
 class UserServiceImpl implements UserService, UserProvider {
 
     private final UserRepository userRepository;
+    private final TrainingRepository trainingRepository;
 
     @Override
     public User createUser(final User user) {
@@ -38,11 +41,13 @@ class UserServiceImpl implements UserService, UserProvider {
     }
 
     @Override
+    @Transactional
     public void deleteUser(final Long userId) {
         log.info("Deleting User with ID={}", userId);
         if (!userRepository.existsById(userId)) {
             throw new UserNotFoundException(userId);
         }
+        trainingRepository.deleteByUserId(userId);
         userRepository.deleteById(userId);
     }
 
